@@ -140,7 +140,7 @@ function relateCardWithSign() {
     }
 
     const cardDescription = signEquivalencies[window.selectedCardNumber];
-    let relatedSign = "";
+    let relatedSign = null;
 
     switch (window.selectedCardNumber) {
         case 4: relatedSign = signs[0]; break; // Aries
@@ -160,7 +160,9 @@ function relateCardWithSign() {
             return;
     }
 
-    alert(`${cardDescription} se relaciona con ${relatedSign}`);
+    if (relatedSign) {
+        alert(`${cardDescription} se relaciona con ${relatedSign.name}`);
+    }
 }
 
 // Get a random card (Major or Minor Arcana)
@@ -174,14 +176,14 @@ function getRandomCard() {
         const suits = Object.keys(minorArcana);
         const suit = suits[Math.floor(Math.random() * suits.length)];
         const cardIndex = Math.floor(Math.random() * minorArcana[suit].length);
-        return { type: 'minor', card: minorArcana[suit][cardIndex], suit: suit };
+        return { type: 'minor', card: minorArcana[suit][cardIndex].card, suit: suit, description: minorArcana[suit][cardIndex].description };
     }
 }
 
-// Perform a full tarot reading by selecting 10 random cards
+// Perform a full tarot reading by selecting 3 random cards
 function fullTarotReading() {
     const reading = [];
-    for (let i = 0; i < 10; i++) { // Select 10 cards for the reading
+    for (let i = 0; i < 3; i++) { // Select 3 cards for the reading
         reading.push(getRandomCard());
     }
 
@@ -190,7 +192,7 @@ function fullTarotReading() {
         if (card.type === 'major') {
             readingSummary += `Carta ${index + 1}: ${card.card} (Arcano Mayor)\n`;
         } else {
-            readingSummary += `Carta ${index + 1}: ${card.card} de ${card.suit} (Arcano Menor)\n`;
+            readingSummary += `Carta ${index + 1}: ${card.card} de ${card.suit} (Arcano Menor) - ${card.description}\n`;
         }
     });
 
@@ -199,37 +201,13 @@ function fullTarotReading() {
 
 // Search for a specific card
 function searchCard() {
-    const searchTerm = prompt("Introduce el nombre de la carta que deseas buscar (por ejemplo, 'El Loco', 'As de Copas'):");
+    const searchTerm = prompt("Introduce el nombre de la carta a buscar (por ejemplo, 'El Loco', 'As de Copas'):");
     let found = false;
 
     // Check in Major Arcana
-    if (majorArcana.includes(searchTerm)) {
-        alert(`${searchTerm} es una carta del Arcano Mayor.`);
-        found = true;
-    }
-
-    // Check in Minor Arcana
-    for (const suit in minorArcana) {
-        if (minorArcana[suit].includes(searchTerm)) {
-            alert(`${searchTerm} es una carta del Arcano Menor en el palo de ${suit}.`);
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) {
-        alert(`${searchTerm} no se encuentra en el mazo.`);
-    }
-}
-
-// Search for a specific card
-function searchCard() {
-    const searchTerm = prompt("Introduce el nombre de la carta a buscar (por ejemplo, 'As de Copas'):");
-    let found = false;
-
-    // Check in Major Arcana
-    if (majorArcana.includes(searchTerm)) {
-        alert(`${searchTerm} es una carta del Arcano Mayor. ${signEquivalencies[majorArcana.indexOf(searchTerm)]}`);
+    const majorIndex = majorArcana.indexOf(searchTerm);
+    if (majorIndex !== -1) {
+        alert(`${searchTerm} es una carta del Arcano Mayor. ${signEquivalencies[majorIndex]}`);
         found = true;
     }
 
